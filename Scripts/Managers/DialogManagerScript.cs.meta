@@ -3,7 +3,13 @@ guid: da7fd3713802d9c45ad418b86a6653f0
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - okTranslation: {fileID: 11400000, guid: dd1014faf5b7efc4a9c0f55ca0d50e11, type: 2}
+  - cancelTranslation: {fileID: 11400000, guid: e6726c1f196c5fb47bbe6190a1aaa757,
+      type: 2}
+  - yesTranslation: {fileID: 11400000, guid: bc6d829fb8cf537449523ec6cd604c0f, type: 2}
+  - noTranslation: {fileID: 11400000, guid: 874f2ef8d7518c940be18a40ad6f0555, type: 2}
+  - dialogPanelAsset: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

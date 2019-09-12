@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
+using UnityDialog.Data;
 using UnityEngine;
 using UnityTranslator.Objects;
-using UnityDialog.Data;
-using UnityDialog.Controllers;
 
 /// <summary>
 /// Unity dialog managers namespace
@@ -126,7 +125,7 @@ namespace UnityDialog.Managers
                 if (go != null)
                 {
                     RectTransform rect_transform = go.GetComponent<RectTransform>();
-                    DialogUIControllerScript dialog_ui_controller = go.GetComponent<DialogUIControllerScript>();
+                    ADialogUIControllerScript dialog_ui_controller = go.GetComponent<ADialogUIControllerScript>();
                     if ((rect_transform != null) && (dialog_ui_controller != null))
                     {
                         dialog_ui_controller.FillValues(dialog_data);
