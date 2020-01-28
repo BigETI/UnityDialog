@@ -10,18 +10,48 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 633ca26d071a54346aec853814800eb0, type: 3}
-  m_Name: NoTranslation
+  m_Name: NoStringTranslation
   m_EditorClassIdentifier: 
   translation:
     texts:
     - text: No
+      stringValue: 
       language: 10
     - text: Non
+      stringValue: 
       language: 14
     - text: No
+      stringValue: 
       language: 21
     - text: Nein
+      stringValue: 
       language: 15
     - text: No
+      stringValue: 
+      language: 34
+    strings:
+    - text: 
+      stringValue: 
+      language: 10
+  stringTranslation:
+    texts:
+    - text: 
+      stringValue: 
+      language: 10
+    strings:
+    - text: 
+      stringValue: No
+      language: 10
+    - text: 
+      stringValue: Non
+      language: 14
+    - text: 
+      stringValue: No
+      language: 21
+    - text: 
+      stringValue: Nein
+      language: 15
+    - text: 
+      stringValue: No
       language: 34
   comment: 

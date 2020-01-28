@@ -18,25 +18,25 @@ namespace UnityDialog.Managers
         /// OK translation
         /// </summary>
         [SerializeField]
-        private TranslationObjectScript okTranslation = default;
+        private StringTranslationObjectScript okTranslation = default;
 
         /// <summary>
         /// Cancel translation
         /// </summary>
         [SerializeField]
-        private TranslationObjectScript cancelTranslation = default;
+        private StringTranslationObjectScript cancelTranslation = default;
 
         /// <summary>
         /// Yes translation
         /// </summary>
         [SerializeField]
-        private TranslationObjectScript yesTranslation = default;
+        private StringTranslationObjectScript yesTranslation = default;
 
         /// <summary>
         /// No translation
         /// </summary>
         [SerializeField]
-        private TranslationObjectScript noTranslation = default;
+        private StringTranslationObjectScript noTranslation = default;
 
         /// <summary>
         /// Dialog panel asset
@@ -57,22 +57,22 @@ namespace UnityDialog.Managers
         /// <summary>
         /// OK translation
         /// </summary>
-        public TranslationObjectScript OKTranslation => okTranslation;
+        public StringTranslationObjectScript OKTranslation => okTranslation;
 
         /// <summary>
         /// Cancel translation
         /// </summary>
-        public TranslationObjectScript CancelTranslation => cancelTranslation;
+        public StringTranslationObjectScript CancelTranslation => cancelTranslation;
 
         /// <summary>
         /// Yes translation
         /// </summary>
-        public TranslationObjectScript YesTranslation => yesTranslation;
+        public StringTranslationObjectScript YesTranslation => yesTranslation;
 
         /// <summary>
         /// No translation
         /// </summary>
-        public TranslationObjectScript NoTranslation => noTranslation;
+        public StringTranslationObjectScript NoTranslation => noTranslation;
 
         /// <summary>
         /// Instance
