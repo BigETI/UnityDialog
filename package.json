@@ -4,7 +4,7 @@
     "displayName": "Dialog system for Unity",
     "description": "This package contains a dialog system for Unity and depends on the Unity translator package which is located at https://github.com/BigETI/UnityTranslator",
     "dependencies": {
-        "https://github.com/BigETI/UnityTranslator.git": "1.0.0"
+        "com.bigeti.translator": "https://github.com/BigETI/UnityTranslator.git"
     },
     "keywords": [
         "dialog"
