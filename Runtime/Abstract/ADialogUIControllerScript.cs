@@ -1,7 +1,9 @@
-﻿using System.Linq;
-using UnityDialog.Data;
+﻿using UnityDialog.Data;
 using UnityDialog.Managers;
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 using UnityEngine.UI;
 
 /// <summary>
@@ -73,6 +75,13 @@ namespace UnityDialog
         /// Dialog data
         /// </summary>
         private DialogData dialogData;
+
+#if ENABLE_INPUT_SYSTEM
+        /// <summary>
+        /// Is pressing escape key
+        /// </summary>
+        private bool isPressingEscapeKey;
+#endif
 
         /// <summary>
         /// Updarte Text
@@ -208,10 +217,19 @@ namespace UnityDialog
         /// </summary>
         private void Update()
         {
+#if ENABLE_INPUT_SYSTEM
+
+            Keyboard keyboard = Keyboard.current;
+            if ((keyboard != null) && keyboard.escapeKey.isPressed && isPressingEscapeKey)
+#else
             if (Input.GetKeyDown(KeyCode.Escape))
+#endif
             {
                 Respond(-1);
             }
+#if ENABLE_INPUT_SYSTEM
+            isPressingEscapeKey = (keyboard != null) && keyboard.escapeKey.isPressed;
+#endif
         }
     }
 }
