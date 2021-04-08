@@ -14,7 +14,7 @@ namespace UnityDialog
         Information,
 
         /// <summary>
-        /// Warning Dialog
+        /// Warning dialog
         /// </summary>
         Warning,
 

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityDialog.Data;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityTranslator.Objects;
 
@@ -9,34 +9,34 @@ using UnityTranslator.Objects;
 namespace UnityDialog.Managers
 {
     /// <summary>
-    /// Dialog manager script class
+    /// A class that describes a dialog manager script
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
-    public class DialogManagerScript : MonoBehaviour
+    public class DialogManagerScript : MonoBehaviour, IDialogManager
     {
         /// <summary>
         /// OK translation
         /// </summary>
         [SerializeField]
-        private StringTranslationObjectScript okTranslation = default;
+        private StringTranslationObjectScript okStringTranslation = default;
 
         /// <summary>
-        /// Cancel translation
+        /// Cancel string translation
         /// </summary>
         [SerializeField]
-        private StringTranslationObjectScript cancelTranslation = default;
+        private StringTranslationObjectScript cancelStringTranslation = default;
 
         /// <summary>
-        /// Yes translation
+        /// Yes string translation
         /// </summary>
         [SerializeField]
-        private StringTranslationObjectScript yesTranslation = default;
+        private StringTranslationObjectScript yesStringTranslation = default;
 
         /// <summary>
-        /// No translation
+        /// No string translation
         /// </summary>
         [SerializeField]
-        private StringTranslationObjectScript noTranslation = default;
+        private StringTranslationObjectScript noStringTranslation = default;
 
         /// <summary>
         /// Dialog panel asset
@@ -45,34 +45,14 @@ namespace UnityDialog.Managers
         private GameObject dialogPanelAsset = default;
 
         /// <summary>
-        /// Rectangle transform
-        /// </summary>
-        private RectTransform rectTransform;
-
-        /// <summary>
         /// Dialog stack
         /// </summary>
-        private Stack<DialogData> dialogStack = new Stack<DialogData>();
+        private Stack<IDialog> dialogStack = new Stack<IDialog>();
 
         /// <summary>
-        /// OK translation
+        /// Current dialog panel object
         /// </summary>
-        public StringTranslationObjectScript OKTranslation => okTranslation;
-
-        /// <summary>
-        /// Cancel translation
-        /// </summary>
-        public StringTranslationObjectScript CancelTranslation => cancelTranslation;
-
-        /// <summary>
-        /// Yes translation
-        /// </summary>
-        public StringTranslationObjectScript YesTranslation => yesTranslation;
-
-        /// <summary>
-        /// No translation
-        /// </summary>
-        public StringTranslationObjectScript NoTranslation => noTranslation;
+        private GameObject currentDialogPanelObject;
 
         /// <summary>
         /// Instance
@@ -80,9 +60,124 @@ namespace UnityDialog.Managers
         public static DialogManagerScript Instance { get; private set; }
 
         /// <summary>
-        /// Awake
+        /// OK string translation
         /// </summary>
-        private void Awake()
+        public StringTranslationObjectScript OKStringTranslation
+        {
+            get => okStringTranslation;
+            set => okStringTranslation = value;
+        }
+
+        /// <summary>
+        /// Cancel string translation
+        /// </summary>
+        public StringTranslationObjectScript CancelStringTranslation
+        {
+            get => cancelStringTranslation;
+            set => cancelStringTranslation = value;
+        }
+
+        /// <summary>
+        /// Yes string translation
+        /// </summary>
+        public StringTranslationObjectScript YesStringTranslation
+        {
+            get => yesStringTranslation;
+            set => yesStringTranslation = value;
+        }
+
+        /// <summary>
+        /// No string translation
+        /// </summary>
+        public StringTranslationObjectScript NoStringTranslation
+        {
+            get => noStringTranslation;
+            set => noStringTranslation = value;
+        }
+
+        /// <summary>
+        /// Dialog stack
+        /// </summary>
+        public IReadOnlyCollection<IDialog> DialogStack => dialogStack;
+
+        /// <summary>
+        /// Rectangle transform
+        /// </summary>
+        public RectTransform RectangleTransform { get; private set; }
+
+        /// <summary>
+        /// notifies if object is not available
+        /// </summary>
+        /// <param name="stringTranslation">String translation</param>
+        /// <param name="name">Name</param>
+        private void NotifyIfObjectIsNotAvailable(UnityEngine.Object obj, string name)
+        {
+            if (!obj)
+            {
+                Debug.LogError($"Please assign { name } to this component.", this);
+            }
+        }
+
+        /// <summary>
+        /// Updates visuals
+        /// </summary>
+        public void UpdateVisuals()
+        {
+            if (!RectangleTransform && TryGetComponent(out RectTransform rectangle_transform))
+            {
+                RectangleTransform = rectangle_transform;
+            }
+            if (currentDialogPanelObject != null)
+            {
+                Destroy(currentDialogPanelObject);
+                currentDialogPanelObject = null;
+            }
+            if ((dialogPanelAsset != null) && (dialogStack.Count > 0))
+            {
+                IDialog dialog = dialogStack.Peek();
+                GameObject dialog_panel_game_object = Instantiate(dialogPanelAsset);
+                if (dialog_panel_game_object != null)
+                {
+                    if (dialog_panel_game_object.TryGetComponent(out RectTransform dialog_panel_rectangle_transform) && dialog_panel_game_object.TryGetComponent(out DialogUIControllerScript dialog_ui_controller))
+                    {
+                        dialog_ui_controller.FillValues(dialog);
+                        dialog_panel_rectangle_transform.SetParent(RectangleTransform, false);
+                        currentDialogPanelObject = dialog_panel_game_object;
+                    }
+                    else
+                    {
+                        Destroy(dialog_panel_game_object);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shows dialog
+        /// </summary>
+        /// <param name="dialog">Dialog</param>
+        public void Show(IDialog dialog)
+        {
+            dialogStack.Push(dialog ?? throw new ArgumentNullException(nameof(dialog)));
+            UpdateVisuals();
+        }
+
+        /// <summary>
+        /// Pops last dialog
+        /// </summary>
+        public void PopLastDialog()
+        {
+            if (dialogStack.Count > 0)
+            {
+                dialogStack.Pop();
+            }
+            UpdateVisuals();
+        }
+
+        /// <summary>
+        /// Gets invoked when script has been awaken
+        /// </summary>
+        protected virtual void Awake()
         {
             if (Instance == null)
             {
@@ -96,70 +191,23 @@ namespace UnityDialog.Managers
         }
 
         /// <summary>
-        /// Start
+        /// Gets invoked when script has been started
         /// </summary>
-        private void Start()
+        protected virtual void Start()
         {
-            rectTransform = GetComponent<RectTransform>();
-        }
-
-        /// <summary>
-        /// Current dialog panel object
-        /// </summary>
-        private GameObject currentDialogPanelObject;
-
-        /// <summary>
-        /// Update visuals
-        /// </summary>
-        public void UpdateVisuals()
-        {
-            if (currentDialogPanelObject != null)
+            if (TryGetComponent(out RectTransform rectangle_transform))
             {
-                Destroy(currentDialogPanelObject);
-                currentDialogPanelObject = null;
+                RectangleTransform = rectangle_transform;
             }
-            if ((dialogPanelAsset != null) && (dialogStack.Count > 0))
+            else
             {
-                DialogData dialog_data = dialogStack.Peek();
-                GameObject go = Instantiate(dialogPanelAsset);
-                if (go != null)
-                {
-                    RectTransform rect_transform = go.GetComponent<RectTransform>();
-                    ADialogUIControllerScript dialog_ui_controller = go.GetComponent<ADialogUIControllerScript>();
-                    if ((rect_transform != null) && (dialog_ui_controller != null))
-                    {
-                        dialog_ui_controller.FillValues(dialog_data);
-                        rect_transform.SetParent(rectTransform, false);
-                        currentDialogPanelObject = go;
-                    }
-                    else
-                    {
-                        Destroy(go);
-                    }
-                }
+                Debug.LogError($"Please assign a rectangle transform component to this game object.", this);
             }
-        }
-
-        /// <summary>
-        /// Show dialog
-        /// </summary>
-        /// <param name="dialogData">Dialog data</param>
-        public void Show(DialogData dialogData)
-        {
-            dialogStack.Push(dialogData);
-            UpdateVisuals();
-        }
-
-        /// <summary>
-        /// Pop last dialog
-        /// </summary>
-        public void PopLastDialog()
-        {
-            if (dialogStack.Count > 0)
-            {
-                dialogStack.Pop();
-            }
-            UpdateVisuals();
+            NotifyIfObjectIsNotAvailable(okStringTranslation, "an OK string translation");
+            NotifyIfObjectIsNotAvailable(cancelStringTranslation, "a cancel string translation");
+            NotifyIfObjectIsNotAvailable(yesStringTranslation, "a yes string translation");
+            NotifyIfObjectIsNotAvailable(noStringTranslation, "a no string translation");
+            NotifyIfObjectIsNotAvailable(dialogPanelAsset, "a dialog panel asset");
         }
     }
 }
