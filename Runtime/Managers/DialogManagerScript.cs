@@ -15,6 +15,12 @@ namespace UnityDialog.Managers
     public class DialogManagerScript : MonoBehaviour, IDialogManager
     {
         /// <summary>
+        /// Dialog destruction time in seconds
+        /// </summary>
+        [SerializeField]
+        private float dialogDestructionTime;
+
+        /// <summary>
         /// OK translation
         /// </summary>
         [SerializeField]
@@ -58,6 +64,15 @@ namespace UnityDialog.Managers
         /// Instance
         /// </summary>
         public static DialogManagerScript Instance { get; private set; }
+
+        /// <summary>
+        /// Dialog destruction time in seconds
+        /// </summary>
+        public float DialogDestructionTime
+        {
+            get => Mathf.Max(dialogDestructionTime, 0.0f);
+            set => dialogDestructionTime = Mathf.Max(value, 0.0f);
+        }
 
         /// <summary>
         /// OK string translation
@@ -129,7 +144,7 @@ namespace UnityDialog.Managers
             }
             if (currentDialogPanelObject != null)
             {
-                Destroy(currentDialogPanelObject);
+                Destroy(currentDialogPanelObject, DialogDestructionTime);
                 currentDialogPanelObject = null;
             }
             if ((dialogPanelAsset != null) && (dialogStack.Count > 0))
@@ -173,6 +188,11 @@ namespace UnityDialog.Managers
             }
             UpdateVisuals();
         }
+
+        /// <summary>
+        /// Gets invoked when script has been validated
+        /// </summary>
+        protected virtual void OnValidate() => dialogDestructionTime = Mathf.Max(dialogDestructionTime, 0.0f);
 
         /// <summary>
         /// Gets invoked when script has been awaken

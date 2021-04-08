@@ -13,6 +13,11 @@ namespace UnityDialog
     public interface IDialogManager
     {
         /// <summary>
+        /// Dialog destruction time in seconds
+        /// </summary>
+        float DialogDestructionTime { get; set; }
+
+        /// <summary>
         /// OK string translation
         /// </summary>
         StringTranslationObjectScript OKStringTranslation { get; set; }
